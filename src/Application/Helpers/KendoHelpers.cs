@@ -26,7 +26,7 @@ public class KendoHelpers
     {
         var directory = new DirectoryInfo(path);
         //var extensions = (filter ?? "*").Split(new string[] { ", ", ",", "; ", ";" }, StringSplitOptions.RemoveEmptyEntries);
-        var extensions = filters != null && filters.Length > 0 ? filters : default;
+        var extensions = filters?.Length > 0 ? filters : default;
         return extensions?.SelectMany(directory.GetFiles)
              .Select(file => new KendoBrowser
              {
@@ -78,7 +78,7 @@ public class KendoHelpers
                 var directories = GetDirectories(fullPath);
                 var result = files?.Concat(directories);
 
-                return new JsonResult(result.ToArray());
+                return new JsonResult(result!.ToArray());
             }
             catch (DirectoryNotFoundException)
             {

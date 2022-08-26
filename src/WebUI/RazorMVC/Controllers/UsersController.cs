@@ -1,5 +1,5 @@
-﻿using Dapper;
-using DHAAccounts.Models;
+﻿using Application.DTOs;
+using Dapper;
 using Kendo.Mvc.UI;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
@@ -533,7 +533,7 @@ namespace Accounting.Controllers
         {
             // var objUser = db.Users.Where(x => x.UserID == Id).Take(1).FirstOrDefault();
 
-            ResetPasswordViewModel userModel = new ResetPasswordViewModel();
+            ResetPasswordDto userModel = new ResetPasswordDto();
             string sql = "select UserID,FirstName,LastName,Email,AKey from Users where UserID='" + Id + "'";
             DataTable objUser = DBUtils.GetDataTable(sql);
             if (objUser != null && objUser.Rows.Count > 0)
@@ -566,7 +566,7 @@ namespace Accounting.Controllers
 
         [HttpPost]
 
-        public async Task<ActionResult> UpdatePassword(ResetPasswordViewModel pUserModel)
+        public async Task<ActionResult> UpdatePassword(ResetPasswordDto pUserModel)
         {
             //string strExist = DBUtils.executeSqlGetSingle("select Email from Users where email='" + pUserModel.Email.ToString() + "'");
             //if (!string.IsNullOrEmpty(strExist))
@@ -826,7 +826,7 @@ namespace Accounting.Controllers
         #region Set User IPAddress 
         public ActionResult SetUsersIPAddress(string Id)
         {
-            UsersIPAdressModel userModel = new UsersIPAdressModel();
+            UsersIPAdressDto userModel = new UsersIPAdressDto();
             string sql = "select UserID,FirstName,LastName,Email,AKey,VerifyIPAddress from Users where UserID='" + Id + "'";
             DataTable objUser = DBUtils.GetDataTable(sql);
             if (objUser != null && objUser.Rows.Count > 0)
@@ -882,7 +882,7 @@ namespace Accounting.Controllers
             }
 
             var totalCount = _dbcontext.QueryFirst<int>(count.RawSql, count.Parameters);
-            var rows = _dbcontext.Query<UsersIPAdressModel>(selector.RawSql, selector.Parameters);
+            var rows = _dbcontext.Query<UsersIPAdressDto>(selector.RawSql, selector.Parameters);
             var result = new DataSourceResult()
             {
                 Data = rows,
@@ -892,7 +892,7 @@ namespace Accounting.Controllers
         }
         public ActionResult AddUserIPAddress(string Id)
         {
-            UsersIPAdressModel pModel = new UsersIPAdressModel();
+            UsersIPAdressDto pModel = new UsersIPAdressDto();
             if (Id != null)
             {
                 string sql = "select * from UsersIPAdress where UsersIPAdressID='" + Id + "'";
@@ -915,7 +915,7 @@ namespace Accounting.Controllers
             return View("~/Views/Users/SetUsersIPAddress.cshtml", pModel);
         }
         [HttpPost]
-        public ActionResult AddUserIPAddress(UsersIPAdressModel pModel)
+        public ActionResult AddUserIPAddress(UsersIPAdressDto pModel)
         {
             bool IsIP = false;
             pModel.VerifyIPAddress = Common.toBool(DBUtils.executeSqlGetSingle("select VerifyIPAddress from Users  where UserId='" + pModel.UserID + "'"));
@@ -973,7 +973,7 @@ namespace Accounting.Controllers
         }
         public ActionResult DeleteUserIPAddress(string Id)
         {
-            UsersIPAdressModel pModel = new UsersIPAdressModel();
+            UsersIPAdressDto pModel = new UsersIPAdressDto();
             if (!string.IsNullOrEmpty(Id))
             {
                 pModel.UserID = DBUtils.executeSqlGetSingle("select UserID from UsersIPAdress  where UsersIPAdressID=" + Id + "");
@@ -1002,7 +1002,7 @@ namespace Accounting.Controllers
         #endregion
 
         #region Helper functions
-        public static List<UserMenuViewModel> getMenuList(string pUserId, int ParentMenuId)
+        public static List<UserMenuDto> getMenuList(string pUserId, int ParentMenuId)
         {
             ////AppDbContext _dbcontext = new AppDbContext(BaseModel.getConnString());
             AppDbContext _dbcontext = new AppDbContext();
@@ -1016,7 +1016,7 @@ namespace Accounting.Controllers
             builder.Where("DefaultMenus.ParentMenuId = " + ParentMenuId);
             builder.Where("UsersMenu.userId = '" + pUserId + "'");
             builder.OrderBy("DefaultMenus.SortOrder");
-            var rows = _dbcontext.Query<UserMenuViewModel>(selector.RawSql, selector.Parameters);
+            var rows = _dbcontext.Query<UserMenuDto>(selector.RawSql, selector.Parameters);
             if (rows.Count() == 0)
             {
                 selectQuery = @"SELECT * FROM(SELECT '' as  UserID, DefaultMenus.MenuID, DefaultMenus.Title, DefaultMenus.Status, '' as ActionControls FROM DefaultMenus /**where**/ ) AS RowConstrainedResult";
@@ -1027,11 +1027,11 @@ namespace Accounting.Controllers
                 builder.Where("DefaultMenus.VisibleInMenu = 1");
                 builder.Where("DefaultMenus.ParentMenuId = " + ParentMenuId);
                 builder.OrderBy("DefaultMenus.SortOrder");
-                rows = _dbcontext.Query<UserMenuViewModel>(selector.RawSql, selector.Parameters);
+                rows = _dbcontext.Query<UserMenuDto>(selector.RawSql, selector.Parameters);
             }
-            foreach (UserMenuViewModel model in rows)
+            foreach (UserMenuDto model in rows)
             {
-                model.subMenu = getMenuList(pUserId, model.MenuID);
+                model.SubMenu = getMenuList(pUserId, model.MenuID);
             }
             return rows.ToList();
         }
