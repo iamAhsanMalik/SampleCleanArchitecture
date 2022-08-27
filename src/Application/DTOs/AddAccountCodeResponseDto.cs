@@ -1,4 +1,4 @@
-﻿namespace Application;
+﻿namespace Application.DTOs;
 public class AddAccountCodeResponseDto
 {
     public bool isAdded = false;

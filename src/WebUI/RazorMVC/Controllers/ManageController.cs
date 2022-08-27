@@ -1,21 +1,17 @@
-<<<<<<< HEAD
+
 #region Packages
-=======
->>>>>>> ee0e30c0e416df1e5f9dbd31db6a79650283017e
+using Application.Contracts.Infrastructure;
+using Application.DTOs.ManageDTOs;
+using Application.Models.IdentityModels;
+using Domain.Enums;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using STM.AIU.Application.Contracts.Infrastructure;
-using STM.AIU.Application.DTOs.ManageDTOs;
-using STM.AIU.Application.Enums;
-using STM.AIU.Application.Models;
-<<<<<<< HEAD
-#endregion
-=======
->>>>>>> ee0e30c0e416df1e5f9dbd31db6a79650283017e
 
-namespace RazorClient.Tutor.Controllers;
+#endregion
+
+namespace Accounting.Controllers;
 
 [Authorize]
 public class ManageController : Controller
@@ -109,7 +105,7 @@ public class ManageController : Controller
         var code = await _userManager.GenerateChangePhoneNumberTokenAsync(user, model.PhoneNumber);
         if (!string.IsNullOrEmpty(model.PhoneNumber))
         {
-            await _smsService.SendSmsAsync(model.PhoneNumber, "Your security code is: " + code);
+            await _smsService.SendSmsByTwillioAsync(model.PhoneNumber, "Your security code is: " + code);
         }
         return RedirectToAction(nameof(VerifyPhoneNumber), new { model.PhoneNumber });
     }
@@ -182,15 +178,10 @@ public class ManageController : Controller
     [HttpGet]
     public async Task<IActionResult> VerifyPhoneNumber(string phoneNumber)
     {
-<<<<<<< HEAD
+
         //
         // Send an SMS to verify the phone number
         return phoneNumber == null ? View("Error") : View(new VerifyPhoneNumberDTO { PhoneNumber = phoneNumber, Code = await _userManager.GenerateChangePhoneNumberTokenAsync(await GetCurrentUserAsync(), phoneNumber) });
-=======
-        var code = await _userManager.GenerateChangePhoneNumberTokenAsync(await GetCurrentUserAsync(), phoneNumber);
-        // Send an SMS to verify the phone number
-        return phoneNumber == null ? View("Error") : View(new VerifyPhoneNumberDTO { PhoneNumber = phoneNumber });
->>>>>>> ee0e30c0e416df1e5f9dbd31db6a79650283017e
     }
 
     //

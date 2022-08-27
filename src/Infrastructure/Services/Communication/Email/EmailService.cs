@@ -15,7 +15,7 @@ internal class EmailService : IEmailService
         _smptConfig = smptConfig.Value;
     }
     #region SMTP
-    public async Task<string> SMTPEmailSenderAsync(SMTPEmailRequest smtpEmailRequest)
+    public async Task<string> SendEmailbySMTPAsync(SMTPEmailRequest smtpEmailRequest)
     {
         try
         {
@@ -70,7 +70,7 @@ internal class EmailService : IEmailService
     #endregion
 
     #region MailJet
-    public async Task<TransactionalEmailResponse> MailJetEmailSenderAsync(MailJetEmailRequest mailJetEmailRequest)
+    public async Task<TransactionalEmailResponse> SendEmailByMailJetAsync(MailJetEmailRequest mailJetEmailRequest)
     {
         MailjetClient _client = new MailjetClient(_mailJetConfig.ApiKey, _mailJetConfig.SecretKey);
 

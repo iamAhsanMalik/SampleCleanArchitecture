@@ -2,5 +2,5 @@
 
 public interface ISmsService
 {
-    Task SMSSenderAsync(string number, string message);
+    Task SendSmsByTwillioAsync(string number, string message);
 }

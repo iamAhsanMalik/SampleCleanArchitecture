@@ -313,5 +313,38 @@ internal class CommonHelpers : ICommonHelpers
         }
         return tmp_point.ToString();
     }
+    /// <summary>
+    /// Converts a byte array to a string of hex characters
+    /// </summary>
+    /// <param name="data"></param>
+    /// <returns></returns>
+    protected static string GetString(byte[] data)
+    {
+        StringBuilder results = new StringBuilder();
 
+        foreach (byte b in data)
+        {
+            results.Append(b.ToString("X2"));
+        }
+
+        return results.ToString();
+    }
+
+    /// <summary>
+    /// Converts a string of hex characters to a byte array
+    /// </summary>
+    /// <param name="data"></param>
+    /// <returns></returns>
+    protected static byte[] GetBytes(string data)
+    {
+        // GetString() encodes the hex-numbers with two digits
+        byte[] results = new byte[data.Length / 2];
+
+        for (int i = 0; i < data.Length; i += 2)
+        {
+            results[i / 2] = Convert.ToByte(data.Substring(i, 2), 16);
+        }
+
+        return results;
+    }
 }

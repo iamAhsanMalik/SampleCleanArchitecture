@@ -7,12 +7,11 @@ internal static class Common
         inputCollection.Select((item, index) => (item, index));
     #endregion
     #region Common Conversion Extension Methods
-    public static string ToStringAiu(this object objectInput)
+    public static string? ToStringAis(this object objectInput)
     {
-        var result = objectInput != null ? Convert.ToString(objectInput) : default;
-        return result ?? "";
+            return objectInput != null ? Convert.ToString(objectInput) : default;
     }
-    public static bool ToBoolAiu(this string stringInput)
+    public static bool ToBoolAis(this string stringInput)
     {
         try
         {
@@ -38,7 +37,7 @@ internal static class Common
             return false;
         }
     }
-    public static bool ToBoolAiu(this object objectInput)
+    public static bool ToBoolAis(this object objectInput)
     {
         try
         {
@@ -64,7 +63,7 @@ internal static class Common
             return false;
         }
     }
-    public static bool IsDateAiu(this object objectInput)
+    public static bool IsDateAis(this object objectInput)
     {
         try
         {
@@ -84,7 +83,7 @@ internal static class Common
             return false;
         }
     }
-    public static bool IsNullDateAiu(this DateTime dateInput)
+    public static bool IsNullDateAis(this DateTime dateInput)
     {
         try
         {
@@ -95,7 +94,7 @@ internal static class Common
             return false;
         }
     }
-    public static bool IsDbNullAiu(this object objectInput)
+    public static bool IsDbNullAis(this object objectInput)
     {
         try
         {
@@ -111,7 +110,7 @@ internal static class Common
             return true;
         }
     }
-    public static int ToIntAiu(this string stringInput)
+    public static int ToIntAis(this string stringInput)
     {
         try
         {
@@ -126,7 +125,7 @@ internal static class Common
             return 0;
         }
     }
-    public static bool IsNullAiu(this object objectInput)
+    public static bool IsNullAis(this object objectInput)
     {
         try
         {
@@ -142,7 +141,7 @@ internal static class Common
             return true;
         }
     }
-    public static int ToIntAiu(this object integerInput)
+    public static int ToIntAis(this object integerInput)
     {
         try
         {
@@ -159,7 +158,7 @@ internal static class Common
             return 0;
         }
     }
-    public static DateTime ToDateTimeAiu(this string stringInput)
+    public static DateTime ToDateTimeAis(this string stringInput)
     {
         DateTime retDate = Convert.ToDateTime("1/1/1990 00:00:00");
         try
@@ -175,7 +174,7 @@ internal static class Common
         }
         return retDate;
     }
-    public static DateTime ToDateTimeAiu(this object objectInput)
+    public static DateTime ToDateTimeAis(this object objectInput)
     {
         DateTime retDate = Convert.ToDateTime("1/1/1990 00:00:00");
         try
@@ -194,7 +193,7 @@ internal static class Common
         }
         return retDate;
     }
-    public static decimal ToDecimalAiu(this string stringInput)
+    public static decimal ToDecimalAis(this string stringInput)
     {
         try
         {
@@ -209,7 +208,7 @@ internal static class Common
             return 0;
         }
     }
-    public static decimal ToDecimalAiu(this object objectInput)
+    public static decimal ToDecimalAis(this object objectInput)
     {
         try
         {
@@ -225,7 +224,7 @@ internal static class Common
             return 0;
         }
     }
-    public static double ToDoubleAiu(this string stringInput)
+    public static double ToDoubleAis(this string stringInput)
     {
         try
         {
@@ -240,7 +239,7 @@ internal static class Common
             return 0;
         }
     }
-    public static double ToDoubleAiu(this object objectInput)
+    public static double ToDoubleAis(this object objectInput)
     {
         try
         {

@@ -1,6 +1,4 @@
-﻿using Application.Contracts.Helpers;
-
-namespace Application.Helpers;
+﻿namespace Application.Helpers;
 internal class GeneratorHelpers : IGeneratorHelpers
 {
     public string GenerateRandomCode(int codeCount = 5)

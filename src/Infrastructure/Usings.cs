@@ -5,7 +5,6 @@ global using Mailjet.Client;
 global using Microsoft.AspNetCore.Http;
 global using Microsoft.Extensions.Options;
 global using Mailjet.Client.TransactionalEmails;
-global using Microsoft.Extensions.Configuration;
 global using Mailjet.Client.TransactionalEmails.Response;
 #endregion
 
