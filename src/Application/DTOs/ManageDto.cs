@@ -9,10 +9,10 @@ public class IndexDto
     public bool BrowserRemembered { get; set; }
 }
 
-public class ManageLoginsDto
+public class ManageLoginsDto<T>
 {
     public IList<UserLoginInfo> CurrentLogins { get; set; } = new List<UserLoginInfo>();
-    public IList<AuthenticationDescription> OtherLogins { get; set; } = new List<AuthenticationDescription>();
+    public IList<T> OtherLogins { get; set; } = new List<T>();
 }
 
 public class FactorViewModel

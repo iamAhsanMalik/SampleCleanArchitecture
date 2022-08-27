@@ -114,15 +114,12 @@ public class AccountController : Controller
 
                 var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code }, protocol: HttpContext.Request.Scheme);
 
-                var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: HttpContext.Request.Scheme);
-
                 if (!string.IsNullOrEmpty(user.Email))
                 {
-                    await _emailSender.SendEmailAsync(user.Email, "Confirm your email",
-                    $"Please confirm your account by clicking here: <a href='{callbackUrl}'>Confirm Your Account</a>.");
+                    //await _emailSender.SendEmailbySMTPAsync(user.Email, "Confirm your email",
+                    //$"Please confirm your account by clicking here: <a href='{callbackUrl}'>Confirm Your Account</a>.");
                 }
                 await _signInManager.SignInAsync(user, isPersistent: false);
-                _logger.LogInformation(3, "User created a new account with password.");
                 return RedirectToLocal(returnUrl);
             }
             AddErrors(registerResult);
@@ -226,7 +223,6 @@ public class AccountController : Controller
                 if (result.Succeeded)
                 {
                     await _signInManager.SignInAsync(user, isPersistent: false);
-                    _logger.LogInformation(6, "User created an account using {Name} provider.", info.LoginProvider);
 
                     // Update any authentication tokens as well
                     await _signInManager.UpdateExternalAuthenticationTokensAsync(info);
@@ -275,34 +271,26 @@ public class AccountController : Controller
     [HttpPost, AllowAnonymous, ValidateAntiForgeryToken]
     public async Task<IActionResult> ForgotPassword(ForgotPasswordDTO model)
     {
-        if (ModelState.IsValid)
+        if (ModelState.IsValid && !string.IsNullOrEmpty(model.Email))
         {
-            if (!string.IsNullOrEmpty(model.Email))
+            var user = await _userManager.FindByEmailAsync(model.Email);
+            if (user == null || !await _userManager.IsEmailConfirmedAsync(user))
             {
-                var user = await _userManager.FindByEmailAsync(model.Email);
-                if (user == null || !await _userManager.IsEmailConfirmedAsync(user))
-                {
-                    // Don't reveal that the user does not exist or is not confirmed for security purposes
-                    return View("ForgotPasswordConfirmation");
-                }
-                else
-                {
-                    var code = await _userManager.GeneratePasswordResetTokenAsync(user);
-                    code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-
-                    var callbackUrl = Url.Action("ResetPassword", "Account", new { userId = user.Id, passwordResetToken = code }, protocol: Request.Scheme);
-                    var emailContent = await _fileHelpers.EmailTemplatesReaderAsync("PasswordReset.html");
-                    var emailSubject = emailContent.Replace("$$ResetPasswordLink$$", callbackUrl).Replace("$$CurrentYear$$", DateTime.Now.Year.ToString());
-                    await _emailSender.SendEmailAsync(model.Email, "Reset Password",
-                    emailSubject);
-                    return View("ForgotPasswordConfirmation");
-                }
+                // Don't reveal that the user does not exist or is not confirmed for security purposes
+                return View("ForgotPasswordConfirmation");
             }
+            else
+            {
+                var code = await _userManager.GeneratePasswordResetTokenAsync(user);
+                code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
 
-            var callbackUrl = Url.Action("ResetPassword", "Account", new { userId = user.Id, emailConfirmationToken = code }, protocol: Request.Scheme);
-            await _emailSender.SendEmailAsync(model.Email, "Reset Password",
-            $@"Please reset your password by clicking here: <a href='\{callbackUrl}\'>Reset Password</a>.");
-            return View("ForgotPasswordConfirmation");
+                var callbackUrl = Url.Action("ResetPassword", "Account", new { userId = user.Id, passwordResetToken = code }, protocol: Request.Scheme);
+                var emailContent = await _fileHelpers.EmailTemplatesReaderAsync("PasswordReset.html");
+                var emailSubject = emailContent.Replace("$$ResetPasswordLink$$", callbackUrl).Replace("$$CurrentYear$$", DateTime.Now.Year.ToString());
+                //await _emailSender.SendEmailAsync(model.Email, "Reset Password",
+                //emailSubject);
+                return View("ForgotPasswordConfirmation");
+            }
         }
 
         // If we got this far, something failed, redisplay form
@@ -360,17 +348,6 @@ public class AccountController : Controller
                         return RedirectToAction(nameof(AccountController.ResetPasswordConfirmation), "Account");
                     }
                     AddErrors(result);
-                }
-
-                if (!string.IsNullOrEmpty(model.Code) && !string.IsNullOrEmpty(model.Password))
-                {
-                    var result = await _userManager.ResetPasswordAsync(user, model.Code, model.Password);
-                    if (result.Succeeded)
-                    {
-                        return RedirectToAction(nameof(AccountController.ResetPasswordConfirmation), "Account");
-                    }
-                    AddErrors(result);
-
                 }
             }
         }
@@ -438,7 +415,7 @@ public class AccountController : Controller
                 var userEmail = await _userManager.GetEmailAsync(user);
                 if (!string.IsNullOrEmpty(userEmail))
                 {
-                    await _emailSender.SendEmailAsync(userEmail, "Security Code", message);
+                    //await _emailSender.SendEmailAsync(userEmail, "Security Code", message);
                 }
             }
             else if (model.SelectedProvider == "Phone")
@@ -446,7 +423,7 @@ public class AccountController : Controller
                 var userPhone = await _userManager.GetPhoneNumberAsync(user);
                 if (!string.IsNullOrEmpty(userPhone))
                 {
-                    await _smsSender.SendSmsAsync(userPhone, message);
+                    //await _smsSender.SendSmsAsync(userPhone, message);
                 }
             }
         }
@@ -493,7 +470,6 @@ public class AccountController : Controller
         }
         if (signInResult?.IsLockedOut == true)
         {
-            _logger.LogWarning(7, "User account locked out.");
             return View("Lockout");
         }
         else
@@ -551,7 +527,6 @@ public class AccountController : Controller
         if (result != null && result.IsLockedOut)
 
         {
-            _logger.LogWarning(7, "User account locked out.");
             return View(nameof(HomeController.Lockout));
         }
         else

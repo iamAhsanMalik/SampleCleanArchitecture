@@ -6,8 +6,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 
 // Add Dependency Layers to the project
-builder.Services.AddApplicationServices();
-
+builder.Services.AddApplicationServices().AddPersistenceServices(builder.Configuration).AddInfrastructureServices();
 
 var app = builder.Build();
 {

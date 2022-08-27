@@ -1,4 +1,5 @@
 ﻿using Domain.Constants;
+using Microsoft.AspNetCore.Hosting;
 
 namespace Infrastructure.Files;
 /// <summary>
